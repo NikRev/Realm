@@ -13,7 +13,7 @@ class ListData:UIViewController, UITableViewDataSource, UITableViewDelegate{
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
            // Set up the configuration
-           let config = Realm.Configuration(schemaVersion: 4)
+           let config = Realm.Configuration(schemaVersion: 6)
            // Use the configuration to initialize the realm
            self.realm = try! Realm(configuration: config)
            

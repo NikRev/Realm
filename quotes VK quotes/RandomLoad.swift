@@ -11,8 +11,8 @@ class RandomLoad: UIViewController {
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         // Set up the configuration with the latest schema version
-        let config = Realm.Configuration(schemaVersion: 4, migrationBlock: { migration, oldSchemaVersion in
-            if oldSchemaVersion < 4 {
+        let config = Realm.Configuration(schemaVersion: 6, migrationBlock: { migration, oldSchemaVersion in
+            if oldSchemaVersion < 6 {
                 // Perform your migration here if needed
                 migration.enumerateObjects(ofType: QuoteObject.className()) { oldObject, newObject in
                     // Ensure the primary key is unique
@@ -22,7 +22,6 @@ class RandomLoad: UIViewController {
             }
         })
         
-        // Use the configuration to initialize the realm
         self.realm = try! Realm(configuration: config)
 
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -90,9 +89,14 @@ class RandomLoad: UIViewController {
     func addQuoteToRealm(text: String) {
         let quote = QuoteObject()
         quote.text = text
-        try! realm.write {
-            realm.add(quote)
+        do{
+            try realm.write {
+                realm.add(quote)
+            }
+        } catch{
+            print(error)
         }
+       
     }
 
     
@@ -103,6 +107,8 @@ class RandomLoad: UIViewController {
                 DispatchQueue.main.async {
                     self?.jokeLabel.text = jsonModel.value
                     self?.addQuoteToRealm(text: jsonModel.value)
+                    // Добавление цитаты с категорией в базу данных
+                  //  self?.addQuoteToRealmWithCategory(text: jsonModel.value, category: "Шутки номер 1")
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
@@ -114,4 +120,5 @@ class RandomLoad: UIViewController {
             self?.loadJokeButton.isHidden = false
         }
     }
+
 }
